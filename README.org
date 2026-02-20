@@ -1,0 +1,14 @@
+#+title: Spack packages for edep-sim + eic-optics 
+
+* Quick start
+
+#+begin_example
+git clone
+spack repo add edep-opticks-spack/edep_opticks/
+
+spack info edepsim
+spack info eicoptics
+
+spack install edepsim +eicoptics
+#+end_example
+
