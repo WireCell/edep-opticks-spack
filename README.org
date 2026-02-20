@@ -3,12 +3,18 @@
 * Quick start
 
 #+begin_example
-git clone
+git clone https://github.com/WireCell/edep-opticks-spack.git
 spack repo add edep-opticks-spack/edep_opticks/
 
 spack info edepsim
 spack info eicoptics
 
-spack install edepsim +eicoptics
+spack install edepsim
 #+end_example
+
+* Todo
+
+- [ ] get eic-opticks building
+- [ ] add a =+opticks= option to edepsim
+  
 
