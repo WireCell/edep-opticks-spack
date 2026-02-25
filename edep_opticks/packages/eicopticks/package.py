@@ -24,7 +24,7 @@ class Eicopticks(CMakePackage, CudaPackage):
     depends_on("cmake@3.10:", type="build")
 
     depends_on("cuda")
-    depends_on("geant4")
+    depends_on("geant4@11.3.2:")
     depends_on("glew")
     depends_on("glfw")
     depends_on("glm")

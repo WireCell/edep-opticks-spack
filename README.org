@@ -10,11 +10,15 @@ spack info edepsim
 spack info eicoptics
 
 spack install edepsim
+spack install eicopticks
 #+end_example
+
+* See also
+
+- [[https://github.com/brettviren/winch/blob/master/example/edepoptics.toml][Winch config using this repo]].
 
 * Todo
 
-- [ ] get eic-opticks building
 - [ ] add a =+opticks= option to edepsim
   
 
