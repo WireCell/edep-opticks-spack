@@ -12,13 +12,27 @@ class Edepsim(CMakePackage):
 
     license("MIT")
 
+    # Fixme: we do not even attempt to support old releases up to and including 3.2.0
     version("master", branch="master")
-    version("3.2.0", sha256="119a5b274601cf721d4f954dee8191e089f157b7b9feb97b10e6a1de399f7771")
-    version("3.1.0", sha256="7ac82d4ef30259b98b82b7d6bca4e556b5c1f65a4e7b9f7bd24df2304ebdd97e")
-    version("3.0.0", sha256="b91343f986ecb66505de813c6221a74c42d3635c4bb9bfe947cf6a1ac397bc15")
-    version("2.0.1", sha256="3017fdbe8047dce970004d6a185191d0d85864e772af33f7438b0b694076761e")
-    version("2.0.0", sha256="f38e6d22e86b84103f00a3c2c49a5cea399ab102926a6e389205f0aeef8695e7")
 
-    depends_on("root@6.28.12:")
-    depends_on("geant4@10.6.1:")
+    depends_on("cmake@3.30:", type="build", when="@master")
 
+    # C++
+
+    cxxstds = ('11', '14', '17', '20')
+    variant('cxxstd', default='17', values=cxxstds, multi=False, description='C++ standard')
+
+    # Pass on the C++ standard to dependencies via "anonymous constraint"
+    for std in cxxstds:
+        depends_on(f"root@ 6.28.12: cxxstd={std}", when=f'cxxstd={std}')
+        depends_on(f"geant4 @10.6.1: cxxstd={std}", when=f'cxxstd={std}')
+        depends_on(f"eicopticks @main cxxstd={std}", when=f'+opticks cxxstd={std}')
+
+    variant('opticks', default=False, when="@master",
+            description='Add support for eic-opticks for GPU accelerated photon transport')
+
+    def cmake_args(self):
+        # Map the variant value to the standard CMake variable
+        return [
+            f"-DCMAKE_CXX_STANDARD={self.spec.variants['cxxstd'].value}"
+        ]

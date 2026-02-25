@@ -20,18 +20,36 @@ class Eicopticks(CMakePackage, CudaPackage):
 
     version("main", branch="main")
 
-    depends_on("cxx", type="build")
     depends_on("cmake@3.10:", type="build")
+    depends_on("cxx", type="build")
+
+    # C++
+    depends_on("cxx", type="build")
+    # Verison 17 is hard-wired in the CMakeLists.txt file
+    cxxstds = ('17',)
+    variant('cxxstd', default='17', values=cxxstds, multi=False, description='C++ standard')
+
+    for std in cxxstds:
+        depends_on(f"geant4@11.3.2: cxxstd={std}", when=f'cxxstd={std}')
+
+    # C++ but does not use cxxstd
+    depends_on("nlohmann-json")
+    depends_on("plog")
 
     depends_on("cuda")
-    depends_on("geant4@11.3.2:")
     depends_on("glew")
     depends_on("glfw")
     depends_on("glm")
     depends_on("glu")
-    depends_on("nlohmann-json")
     depends_on("mesa")
     depends_on("optix-dev")
     depends_on("openssl")
-    depends_on("plog")
+
     depends_on("python")
+
+    def cmake_args(self):
+        # Map the variant value to the standard CMake variable
+        return [
+            f"-DCMAKE_CXX_STANDARD={self.spec.variants['cxxstd'].value}"
+        ]
+    

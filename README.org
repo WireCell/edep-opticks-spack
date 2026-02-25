@@ -1,24 +1,94 @@
 #+title: Spack packages for edep-sim + eic-optics 
 
+* Caveats
+
+This is for an R&D project and not (yet) intended for production.
+- [X] Support edep-sim directly depending on eic-opticks
+- [ ] Support 3rd party opticks plugin
+
 * Quick start
 
 #+begin_example
 git clone https://github.com/WireCell/edep-opticks-spack.git
 spack repo add edep-opticks-spack/edep_opticks/
-
-spack info edepsim
-spack info eicoptics
-
-spack install edepsim
-spack install eicopticks
+spack install edepsim+opticks cxxstd=17
 #+end_example
 
-* See also
+To use more cores and speed up the build:
 
-- [[https://github.com/brettviren/winch/blob/master/example/edepoptics.toml][Winch config using this repo]].
+#+begin_example
+spack install --jobs 32 edepsim+opticks cxxstd=17
+#+end_example
 
-* Todo
+* Developing
 
-- [ ] add a =+opticks= option to edepsim
-  
+How to set up a developer environment.
+
+** Build dependencies with Spack
+
+#+begin_example
+  git clone --branch {version} --depth=2 https://github.com/spack/spack.git
+  source spack/share/spack/setup-env.sh 
+  spack compiler find
+  spack bootstrap now
+
+  git clone https://github.com/WireCell/edep-opticks-spack.git
+  spack repo add edep-opticks-spack/edep_opticks/
+
+  spack install edepsim+opticks cxxstd=17
+#+end_example
+
+** Create development area using a Spack View
+
+A Spack "view" is a tidy directory that symlinks in all files from all required packages and makes an ideal base for development.
+
+#+begin_example
+  mkdir hack && cd hack/
+
+  spack view --dependencies yes --exclude edepsim add -i local edepsim@master+opticks cxxstd=17
+  git clone https://github.com/ClarkMcGrew/edep-sim.git
+
+  ./local/bin/cmake -S edep-sim -B edep-sim-build \
+                    -DCMAKE_INSTALL_PREFIX=$PWD/local \
+                    -DCMAKE_INSTALL_RPATH='$ORIGIN/../lib' \
+                    -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON                    
+  ./local/bin/cmake --build edep-sim-build
+  ./local/bin/cmake --install edep-sim-build
+  ./local/bin/edep-sim
+#+end_example
+
+Notes:
+- We reuse the view directory also as our install directory.
+- We add extra =CMAKE_INSTALL_*= defs to set =rpath= in the binaries and avoid =LD_LIBRARY_PATH=.
+
+*** Automate shell environment with direnv
+
+So far we have not polluted our shell environment.  Using =direnv= is one useful
+way to manage shell environment tied to a directory.  To use this, add the
+following to your =.bashrc= or run it directly.
+
+#+begin_example
+eval $(direnv hook bash)
+#+end_example
+
+Copy this into a =.envrc= file in the directory holding =local/=.
+
+#+begin_example
+load_prefix "$PWD/local"
+#+end_example
+
+Next time you =cd= to the dev directory, run =direnv allow= once.
+
+After this is done, =edep-sim= is in the path and can run.  
+
+#+begin_example
+edep-sim 
+#+end_example
+
+** Create development area using a Spack Environment
+
+t.b.d.
+
+
+
 
