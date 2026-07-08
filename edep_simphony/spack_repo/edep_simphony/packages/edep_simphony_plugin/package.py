@@ -57,6 +57,8 @@ class EdepSimphonyPlugin(CMakePackage):
 
     def setup_run_environment(self, env):
         lib = join_path(self.prefix.lib, "libedep-simphony-plugin.so")
+        # The shipped run macros load the plugin actions via $(PLUGIN_LIB).
+        env.set("PLUGIN_LIB", lib)
         # Load the plugin's instrumented Cerenkov/Scintillation physics into
         # edep-sim (EXTERN:<lib>:<factory>).
         env.set("EXTRAPHYSICS", f"EXTERN:{lib}:CreatePhysicsConstructor")
