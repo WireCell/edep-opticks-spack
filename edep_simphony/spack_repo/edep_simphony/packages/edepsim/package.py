@@ -14,6 +14,7 @@ class Edepsim(CMakePackage):
     license("MIT")
 
     version("master", branch="master")
+    version("4.4.0", sha256="3cbb947efbdefda0a079e7af4e340aa69f74a16e6d30956ea9de8be6fe217006")
     version("4.3.0", sha256="e4c71cee7a0dbe5e16dc79c67f2ceef5d7b1462303a7683dee4923150b598b99")
     version("4.2.0", sha256="56a85ca3d12035f061747ea848d42ca019d5923597a66f6b31ae71d1ad00c04d")
     version("4.1.0", sha256="88821c1d8ef720da3c3239b25a3df8701fd691bef46dc8f7be3fc05ae47b5e0b")
